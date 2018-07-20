@@ -1,0 +1,8 @@
+---
+- hosts: all
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: Download public keys
+    git: repo=https://github.com/managedkaos/provisioning dest=/tmp/provisioning
