@@ -4,11 +4,27 @@
   vars:
     user_files_path: /vagrant/provisioning/users
   tasks:
+  - name: User group 'wheel' must be present
+    group:
+      name: wheel
+      state: present
+
+  - name: Allow 'wheel' group to have passwordless sudo
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
   - name: Create a user for each public key file
     user:
       name: "{{ item | basename }}"
       shell: /bin/bash
       state: present
+      groups: wheel
+      append: yes
+      create_home: yes
     with_fileglob:
       - "{{ user_files_path }}/*"
 
